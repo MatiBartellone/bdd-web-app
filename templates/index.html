@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD de Bases de Datos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #202C39; /* Fondo oscuro para la página */
+            color: #B8B08D; /* Texto suave */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #F2D492; /* Título en color cálido */
+            margin-top: 20px;
+        }
+
+        /* Contenedor de las columnas */
+        .container {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            margin-top: 40px;
+        }
+
+        /* Columnas */
+        .column {
+            width: 45%;
+            padding: 20px;
+            background-color: #283845; /* Fondo gris suave para las columnas */
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Títulos de las secciones */
+        h2 {
+            text-align: center;
+            color: #F2D492; /* Títulos en color cálido */
+        }
+
+        /* Formularios */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        form label {
+            font-weight: bold;
+            color: #F2D492; /* Color cálido para etiquetas */
+        }
+
+        form input, form textarea, form button {
+            padding: 10px;
+            border: 1px solid #B8B08D; /* Borde en color suave */
+            border-radius: 5px;
+            background-color: #283845; /* Fondo gris suave */
+            color: #B8B08D; /* Texto suave */
+        }
+
+        form input:focus, form textarea:focus {
+            border-color: #F29559; /* Borde de entrada enfocado en color cálido */
+            outline: none;
+        }
+
+        form button {
+            background-color: #F29559; /* Botón en color cálido */
+            color: #202C39; /* Texto oscuro para el botón */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #F2D492; /* Efecto hover de botón */
+            color: #202C39; /* Cambio de color de texto en hover */
+        }
+
+        /* Tablas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #B8B08D; /* Bordes en color suave */
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            color: #B8B08D; /* Color suave para texto en las tablas */
+        }
+
+        th {
+            background-color: #283845; /* Fondo de encabezado gris oscuro */
+        }
+
+        td {
+            background-color: #202C39; /* Fondo de celdas oscuro */
+        }
+
+        /* Botones de acción */
+        button.update-btn, button.delete-btn, button.update-btn-mongo {
+            background-color: #F29559; /* Botón de acción en color cálido */
+            color: #202C39; /* Texto oscuro para los botones */
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button.update-btn:hover, button.delete-btn:hover, button.update-btn-mongo:hover {
+            background-color: #F2D492; /* Efecto hover */
+            color: #202C39;
+        }
+
+        /* Campo de inputs de MongoDB */
+        #mongo-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #mongo-fields .field-row {
+            display: flex;
+            gap: 15px;
+            width: 100%; /* Asegura que los inputs ocupen todo el ancho de la columna */
+        }
+
+        #mongo-fields input {
+            flex: 1; /* Hace que los inputs se estiren para ocupar todo el ancho disponible */
+            padding: 10px;
+            border: 1px solid #B8B08D; /* Bordes suaves */
+            border-radius: 5px;
+            background-color: #283845; /* Fondo gris suave */
+            color: #B8B08D; /* Color del texto */
+        }
+
+        /* Botón de agregar campo */
+        #add-field {
+            background-color: #F29559;
+            color: #202C39;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%; /* Hace que el botón ocupe todo el ancho disponible */
+        }   
+        #add-field:hover {
+            background-color: #F2D492;
+            color: #202C39;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>CRUD de Bases de Datos</h1>
+
+    <div class="container">
+        <!-- Columna de MySQL -->
+        <div class="column">
+            <h2>MySQL</h2>
+            <form id="add-mysql-form">
+                <label for="mysql-name">Nombre:</label>
+                <input type="text" id="mysql-name" name="name" required>
+                <label for="mysql-description">Descripción:</label>
+                <textarea id="mysql-description" name="description" required></textarea>
+                <button type="submit">Agregar a MySQL</button>
+            </form>
+
+            <h2>Registros en MySQL</h2>
+            <table id="mysql-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los registros se cargarán aquí con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Columna de MongoDB -->
+        <div class="column">
+            <h2>MongoDB</h2>
+            <form id="add-mongo-form">
+                <div id="mongo-fields">
+                    <div class="field-row">
+                        <input type="text" id="mongo-key-1" placeholder="Nombre del campo">
+                        <input type="text" id="mongo-value-1" placeholder="Valor del campo">
+                    </div>
+                </div>
+                <button type="button" id="add-field">Agregar otro campo</button>
+                <button type="submit">Agregar a MongoDB</button>
+            </form>
+
+            <h2>Registros en MongoDB</h2>
+            <table id="mongo-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Campos</th>
+                        <th>Valores</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los registros de MongoDB se cargarán aquí -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
