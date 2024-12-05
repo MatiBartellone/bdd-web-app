@@ -21,8 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                     tableBody.appendChild(row);
                 });
-
-                // Agregar eventos para actualizar y eliminar
                 document.querySelectorAll('.update-btn').forEach(button => {
                     button.addEventListener('click', updateMysqlRecord);
                 });
@@ -42,17 +40,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.forEach(record => {
                     const fieldCell = document.createElement('td');
                     const fields = Object.keys(record)
-                        .filter(key => key !== '_id') // Excluir el campo `_id`
-                        .map(key => key)  // Solo el nombre del campo
-                        .join('<br>');  // Los campos separados por un salto de línea
+                        .filter(key => key !== '_id')
+                        .map(key => key)
+                        .join('<br>');
                     fieldCell.innerHTML = fields;
 
-                    // Columna de valores
                     const valueCell = document.createElement('td');
                     const values = Object.keys(record)
-                        .filter(key => key !== '_id') // Excluir el campo `_id`
-                        .map(key => record[key])  // Los valores de cada campo
-                        .join('<br>');  // Los valores separados por un salto de línea
+                        .filter(key => key !== '_id')
+                        .map(key => record[key])
+                        .join('<br>');
                     valueCell.innerHTML = values;
                         
                     const row = document.createElement('tr');
@@ -68,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     tableBody.appendChild(row);
                 });
 
-                // Agregar eventos para actualizar y eliminar
                 document.querySelectorAll('.update-btn-mongo').forEach(button => {
                     button.addEventListener('click', updateMongoRecord);
                 });
@@ -96,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         }).then(response => response.json()).then(() => {
-            getMysqlData(); // Recargar la tabla de MySQL
+            getMysqlData();
         });
 
         addMysqlForm.reset();
@@ -120,9 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         }).then(response => response.json()).then(() => {
-            getMongoData(); // Recargar tabla de MongoDB
+            getMongoData();
 
-            // Reiniciar formulario dinámico
             const fieldsDiv = document.getElementById('mongo-fields');
             fieldsDiv.innerHTML = `
                 <div class="field-row">
@@ -160,21 +155,19 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         }).then(response => response.json()).then(() => {
-            getMysqlData(); // Recargar la tabla de MySQL
+            getMysqlData();
         });
     }
 
     // Función para actualizar datos en MongoDB
     function updateMongoRecord(event) {
         const id = event.target.getAttribute('data-id');
-    
-        // Obtener los datos actuales de MongoDB
+
         fetch(`/get_mongo/${id}`)
             .then(response => response.json())
             .then(record => {
                 const updatedData = {};
-    
-                // Preguntar por los nuevos valores para cada campo
+
                 Object.keys(record).forEach(key => {
                     if (key !== '_id') {
                         const newValue = prompt(`Ingrese el nuevo valor para ${key}:`, record[key]);
@@ -183,8 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 });
-    
-                // Solo hacer la solicitud de actualización si hay datos para actualizar
                 if (Object.keys(updatedData).length > 0) {
                     fetch(`/update_mongo/${id}`, {
                         method: 'PUT',
@@ -198,7 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         return response.json();
                     })
                     .then(() => {
-                        // Recargar la tabla de MongoDB después de la actualización
                         getMongoData();
                     })
                     .catch(error => {
@@ -221,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(`/delete_mysql/${id}`, {
             method: 'DELETE'
         }).then(response => response.json()).then(() => {
-            getMysqlData(); // Recargar la tabla de MySQL
+            getMysqlData();
         });
     }
 
@@ -232,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(`/delete_mongo/${id}`, {
             method: 'DELETE'
         }).then(response => response.json()).then(() => {
-            getMongoData(); // Recargar la tabla de MongoDB
+            getMongoData();
         });
     }
 });
